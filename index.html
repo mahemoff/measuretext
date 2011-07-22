@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+
+    <link href='http://fonts.googleapis.com/css?family=Special+Elite|Open+Sans&v2' rel='stylesheet' type='text/css'>
+
+    <style>
+      * { margin: 0; padding: 0; }
+      html { text-align: center; font-family: "Open Sans", arial, helvetica, sans-serif; }
+      body { background: #000; color: #fff; }
+      #header { font-size: 32px; font-weight: bold; padding: 1em 0; }
+      h1 {
+        font-family: "special elite", courier, sans-serif;
+        -webkit-box-reflect:below -25px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5, transparent), to(white));
+      }
+      #main { background-image: -webkit-linear-gradient(top, #fbb, #f77); -moz-linear-gradient(top, #fbb, #f77); background-color: #fbb; padding: 20px 0; font-size: 16px; color: black; position: relative; color: #000; }
+      #settings div { padding-left: 5px; }
+      #settings input { font-size: 25px; width: 100%; margin: 2px 0; padding: 5px; }
+      .setting { width: 200px; margin: 1em auto; text-align: left; }
+      #explanation { position: absolute; top: 40px; left: 50%; width: 300px; margin-left: -450px; text-align: left; }
+      #explanation pre { margin-top: 1em; }
+      #results { position: absolute; top: 40px; left: 50%; margin-left: 150px; }
+      #metrics { text-align: left; padding: 20px; background: #fd0344; border-radius: 5px; width: 200px; color: white; }
+      #metrics:hover { background: #ff0000; }
+      .measureTextSpecimen { background: rgba(30%,30%,30%,0.8); border: 1px solid white; margin-top: 40px; }
+    </style>
+
+    <script src="measureText.js"></script>
+    <script src="demolib/underscore.min.js"></script>
+    <script src="demolib/jquery.min.js"></script>
+    <script src="demolib/jquery.placeholder.min.js"></script>
+
+    <script>
+    window.onload = function() {
+
+      // demo metrics against global utility
+      console.log("metrics", measureText("Avacado", "12px serif"));
+      console.log("metrics", measureText("M", "64px arial"));
+
+      // demo metrics against canvas shim
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext("2d");
+      context.font = "12px serif";
+      console.log("metrics", context.measureText("foooo"));
+      context.font = "64px serif";
+      console.log("metrics", context.measureText("foooo"));
+
+      // interactive app
+      $(function() {
+        $("input").placeholder().keyup(repaint);
+        repaint();
+      });
+
+      function repaint() {
+        $("#metrics").html("thinking ...");
+        var metrics = measureText($("#text").val(), $("#font").val(), {
+          debug: true,
+          emboxStyle: "rgba(100%,0%,0%,0.1)"
+        });
+        $("#metrics").html("{\n"+_(metrics).keys().sort().map(function(key) {
+          return "  "+key+": "+metrics[key]+",\n"
+        }).join("").replace(/,\n$/,"\n")+"}");
+      }
+
+    }
+    </script>
+
+  </head>
+
+  <body>
+
+    <div id="header"><header>
+      <h1>MeasureText Demo</h1>
+    </header></div>
+
+    <div id="main">
+
+      <div id="settings">
+
+        <div id="results">
+          <pre id="metrics"></pre>
+        </div>
+
+        <div id="explanation">
+          <p>Font metrics. Canvas for now, but could be useful elsewhere. For canvas, it offers a shim for the default <tt>measureText</tt> method, which only returns width.</p>
+          <pre>
+measureText("XYZ", "12px serif");
+canvasContext.measureText("XYZ");
+          </pre>
+        </div>
+
+        <div class="setting">
+          <div>Some Text:</div>
+          <input id="text" value="Avacado" placeholder="Avacado" />
+        </div>
+
+        <div class="setting">
+          <div>A font setting:</div>
+          <input id="font" value="64px arial" placeholder = "12px arial" />
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>
