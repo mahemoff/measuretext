@@ -78,6 +78,13 @@ THE SOFTWARE.
     context.fillStyle = "#666";
     context.fillText(text, emSquareLeft, emSquareTop);
 
+    if (!text.length) return {
+      width: estimatedWidth,
+      height: actualBottom - actualTop,
+      topEmGap: actualTop - emSquareTop,
+      bottomEmGap: (emSquareTop+estimatedEmHeight) - actualBottom
+    };
+
     var imageData = 
       context.getImageData(0,0,canvas.width,canvas.height).data;
     var actualTop, actualBottom;
