@@ -69,6 +69,7 @@ THE SOFTWARE.
     canvas.width = canvasWidth,
     canvas.height = canvasHeight,
     DEBUG(function() {
+      console.log("setting", canvasWidth, canvasHeight);
       canvas.style.width = canvasWidth;
       canvas.style.height = canvasHeight;
     });
@@ -80,9 +81,8 @@ THE SOFTWARE.
 
     if (!text.length) return {
       width: estimatedWidth,
-      height: actualBottom - actualTop,
-      topEmGap: actualTop - emSquareTop,
-      bottomEmGap: (emSquareTop+estimatedEmHeight) - actualBottom
+      height: estimatedEmHeight,
+      topGap: estimatedEmHeight/2
     };
 
     var imageData = 
@@ -115,8 +115,7 @@ THE SOFTWARE.
     return {
       width: estimatedWidth,
       height: actualBottom - actualTop,
-      topEmGap: actualTop - emSquareTop,
-      bottomEmGap: (emSquareTop+estimatedEmHeight) - actualBottom
+      topOffset: actualTop - emSquareTop
     };
 
   }
