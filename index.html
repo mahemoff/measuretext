@@ -2,7 +2,7 @@
 <html>
   <head>
 
-    <link href='http://fonts.googleapis.com/css?family=Special+Elite|Open+Sans&v2' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Special+Elite|Open+Sans|Calligraffitti&v2' rel='stylesheet' type='text/css'>
 
     <style>
       * { margin: 0; padding: 0; }
@@ -22,7 +22,7 @@
       #results { position: absolute; top: 40px; left: 50%; margin-left: 150px; }
       #metrics { text-align: left; padding: 20px; background: #fd0344; border-radius: 5px; width: 200px; color: white; }
       #metrics:hover { background: #ff0000; }
-      .measureTextSpecimen { background: rgba(30%,30%,30%,0.8); border: 1px solid white; margin-top: 40px; }
+      .measureTextSpecimen { background: rgba(0%,0%,60%,0.8); border: 1px solid white; margin-top: 40px; }
     </style>
 
     <script src="measuretext.js"></script>
@@ -44,25 +44,26 @@
       console.log("metrics", context.measureText("foooo"));
       context.font = "64px serif";
       console.log("metrics", context.measureText("foooo"));
+      context.font = "50px Calligraffitti";
+      console.log("metrics", context.measureText("g"));
 
-      // interactive app
-      $(function() {
-        $("input").placeholder().keyup(repaint);
-        repaint();
-      });
-
-      function repaint() {
-        $("#metrics").html("thinking ...");
-        var metrics = measureText($("#text").val(), $("#font").val(), {
-          debug: true,
-          emboxStyle: "rgba(100%,0%,0%,0.1)"
-        });
-        $("#metrics").html("{\n"+_(metrics).keys().sort().map(function(key) {
-          return "  "+key+": "+metrics[key]+",\n"
-        }).join("").replace(/,\n$/,"\n")+"}");
-      }
+      $("input").placeholder().keyup(repaint);
+      repaint();
 
     }
+
+    function repaint() {
+      $("#metrics").html("thinking ...");
+      var metrics = measureText($("#text").val(), $("#font").val(), {
+        debug: true,
+        emboxStyle: "rgba(100%,0%,0%,0.5)"
+      });
+      $("#metrics").html("{\n"+_(metrics).keys().sort().map(function(key) {
+        return "  "+key+": "+metrics[key]+",\n"
+      }).join("").replace(/,\n$/,"\n")+"}");
+    }
+
+
     </script>
 
   </head>
