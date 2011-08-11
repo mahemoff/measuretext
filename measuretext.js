@@ -45,7 +45,7 @@ THE SOFTWARE.
 
     var DEBUG = (options && options.debug) ?
       function(lifesaver) { lifesaver(); } : function() {};
-    var boundingBoxRatio = options && options.boundingBoxRatio || 2;
+    var boundingBoxRatio = options && options.boundingBoxRatio || 3;
 
     canvas = canvas || document.createElement("canvas"),
         context = canvas.getContext("2d");
@@ -74,8 +74,9 @@ THE SOFTWARE.
       canvas.style.height = canvasHeight;
     });
 
-    context.font = font,
+    context.font = font;
     context.textBaseline = "top"
+    context.textAlign = "left";
     context.fillStyle = "#666";
     context.fillText(text, emSquareLeft, emSquareTop);
 
@@ -87,36 +88,49 @@ THE SOFTWARE.
 
     var imageData = 
       context.getImageData(0,0,canvas.width,canvas.height).data;
-    var actualTop, actualBottom;
+    var actualTop, actualBottom, actualLeft, actualRight, lefty,
+        lefties = [], righties = [];
 
     for (var y=0; y<canvasHeight; y++) {
+      lefty = null, righty = null;
       for (var x=0; x<canvasWidth; x++) {
         for (var component=0; component<3; component++) {
           if (imageData[4*y*canvas.width + 4*x + component] > 0) {
+            if (!lefty) lefty = x;
+            righty = x;
             if (!actualTop) actualTop = y;
-            actualBottom = y
+            actualBottom = y;
           }
         }
       }
+      if (lefty) lefties.push(lefty)
+      if (righty) righties.push(righty)
     }
+
+    var actualLeft = Math.min.apply(null, lefties)
+    var actualRight = Math.max.apply(null, righties)
+    var metrics = {
+      // width: estimatedWidth,
+      width: actualRight - actualLeft,
+      height: actualBottom - actualTop,
+      leftOffset: Math.min.apply(null, lefties) - emSquareLeft,
+      topOffset: actualTop - emSquareTop,
+    };
 
     // Now that we've scanned it, draw a 1em bounding rectangle for debug
     DEBUG(function() {
       context.fillStyle = options.emboxStyle || "rgba(80%,80%,100%,0.1)";
-      context.fillRect(emSquareLeft, emSquareTop, estimatedWidth, estimatedEmHeight);
-      console.log(font, estimateFontPixels(font),
+      context.fillRect(actualLeft, actualTop, metrics.width, metrics.height);
+      console.log(font, estimateFontPixels(font), metrics,
         "est-wid", estimatedWidth, "est-height", estimatedEmHeight,
         "em-ratio", emSquareOffsetRatio,
         "can-wid", canvasWidth, "can-height", canvasHeight,
         "em-top", emSquareTop, "em-left", emSquareLeft,
-        "bottom", actualBottom, "top", actualTop);
+        "bottom", actualBottom, "top", actualTop,
+        "left", actualLeft, "right", actualRight);
     });
 
-    return {
-      width: estimatedWidth,
-      height: actualBottom - actualTop,
-      topOffset: actualTop - emSquareTop
-    };
+    return metrics;
 
   }
 
@@ -132,7 +146,6 @@ THE SOFTWARE.
   CanvasRenderingContext2D.prototype.measureText=function(text) {
     var metrics = originalMeasureText.call(this,text);
     var extraMetrics = window.measureText(text, this.font);
-    console.log("extraMetrics", extraMetrics);
     for (key in extraMetrics) {
       metrics[key] = extraMetrics[key];
     }
