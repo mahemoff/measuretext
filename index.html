@@ -7,12 +7,13 @@
     <style>
       * { margin: 0; padding: 0; }
       html { text-align: center; font-family: "Open Sans", arial, helvetica, sans-serif; }
-      body { background: #000; color: #fff; }
+      body,a { background: #000; color: #fff; }
       #header { font-size: 32px; font-weight: bold; padding: 1em 0; }
       h1 {
         font-family: "special elite", courier, sans-serif;
         -webkit-box-reflect:below -25px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5, transparent), to(white));
       }
+      h2 { margin-top: 20px; font-size: 12px; }
       #main { background-image: -webkit-linear-gradient(top, #fbb, #f77); -moz-linear-gradient(top, #fbb, #f77); background-color: #fbb; padding: 20px 0; font-size: 16px; color: black; position: relative; color: #000; }
       #settings div { padding-left: 5px; }
       #settings input { font-size: 25px; width: 100%; margin: 2px 0; padding: 5px; }
@@ -54,6 +55,9 @@
 
     function repaint() {
       $("#metrics").html("thinking ...");
+      if (! $("#text").val().length) {
+        $("#text").val('M');
+      }
       var metrics = measureText($("#text").val(), $("#font").val(), {
         debug: true,
         emboxStyle: "rgba(100%,0%,0%,0.5)"
@@ -74,6 +78,7 @@
 
     <div id="header"><header>
       <h1>MeasureText Demo</h1>
+      <h2>Example application: <a href='http://faviconist.com'>Favicon Generator</a></h2>
     </header></div>
 
     <div id="main">
