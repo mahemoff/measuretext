@@ -39,7 +39,8 @@ THE SOFTWARE.
 
 (function() {
 
-  var canvas;
+  var canvas,
+  DUD = { width: 0, height: 0, topGap: 0, leftGap: 0 };
 
   window.measureText = function(text, font, options) {
 
@@ -47,7 +48,7 @@ THE SOFTWARE.
       function(lifesaver) { lifesaver(); } : function() {};
     var boundingBoxRatio = options && options.boundingBoxRatio || 3;
 
-    canvas = canvas || document.createElement("canvas"),
+    var canvas = canvas || document.createElement("canvas"),
         context = canvas.getContext("2d");
     DEBUG(function() {
       canvas.className = "measureTextSpecimen";
@@ -80,14 +81,9 @@ THE SOFTWARE.
     context.fillStyle = "#666";
     context.fillText(text, emSquareLeft, emSquareTop);
 
-    if (!text.length) return {
-      width: estimatedWidth,
-      height: estimatedEmHeight,
-      topGap: estimatedEmHeight/2
-    };
+    if (!text.length) return DUD;
 
-    var imageData = 
-      context.getImageData(0,0,canvas.width,canvas.height).data;
+    var imageData = context.getImageData(0,0,canvas.width,canvas.height).data;
     var actualTop, actualBottom, actualLeft, actualRight, lefty,
         lefties = [], righties = [];
 
@@ -106,6 +102,7 @@ THE SOFTWARE.
       if (lefty) lefties.push(lefty)
       if (righty) righties.push(righty)
     }
+    if (typeof actualBottom=="undefined") return DUD;
 
     var actualLeft = Math.min.apply(null, lefties)
     var actualRight = Math.max.apply(null, righties)
