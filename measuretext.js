@@ -48,8 +48,8 @@ THE SOFTWARE.
       function(lifesaver) { lifesaver(); } : function() {};
     var boundingBoxRatio = options && options.boundingBoxRatio || 3;
 
-    var canvas = canvas || document.createElement("canvas"),
-        context = canvas.getContext("2d");
+    canvas = canvas || document.createElement("canvas")
+    var context = canvas.getContext("2d");
     DEBUG(function() {
       canvas.className = "measureTextSpecimen";
       document.body.appendChild(canvas);
