@@ -1,3 +1,5 @@
-See http://mahemoff.github.com/measuretext
+Live demo: http://mahemoff.github.com/measuretext
 
-Built to support http://Faviconist.com, a favicon generator.
+A drop-in replacement for Canvas's fontMetrics object, which (inexplicably?) only contains one field, width.
+
+Built to support http://Faviconist.com, a favicon generator, and running in production there.
